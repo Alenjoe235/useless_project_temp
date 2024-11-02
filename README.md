@@ -136,7 +136,7 @@ For Hardware:
 ### Project Demo
 # Video
 [[Add your demo video link here](https://www.loom.com/share/07030a81039241d3ad1ea895ba1bbcf8?sid=f5bac9f6-bc21-48c2-860b-c9b62b80af74)]
-*Explain what the video demonstrates*
+The above video shows a brief walkthrough of "Pawsome Translator"
 
 # Additional Demos
 [Add any extra demo materials/links]
