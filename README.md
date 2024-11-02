@@ -1,38 +1,45 @@
 <img width="1280" alt="readme-banner" src="https://github.com/user-attachments/assets/35332e92-44cb-425b-9dff-27bcf1023c6c">
 
-# [Project Name] 🎯
+# [Novu] 🎯
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: [Novus Codex]
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: Aflah Muhammed P - [CET]
+- Member 2: Alan Joe benny - CET
+- Member 3: Shravan Pandala - CET
 
 ### Project Description
-[2-3 lines about what your project does]
+Bark Translator is a fun and innovative application that translates dog barks into human language. By analyzing the sound patterns and frequencies of different barks, the app provides users with insights into what their furry friends might be trying to communicate. Whether it's excitement, hunger, or a call for attention, Bark Translator helps bridge the communication gap between dogs and their owners.
+
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+In a world where dogs bark but humans can only guess their meaning, how can we truly understand our canine companions? The struggle of deciphering barks has plagued pet owners for ages—until now!
+
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+Bark Translator offers a lighthearted solution by using advanced sound analysis to interpret barks. The app not only translates barks into humorous phrases but also provides tips on how to respond, making it a delightful experience for pet owners and their dogs alike.
+
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
+- Languages used: JavaScript, HTML, CSS
+- Frameworks used: React
+- Libraries used: Web Audio API, TensorFlow.js for sound classification
+- Tools used: Create React App, npm
+
+
+
 
 For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
+- Microphone for sound input
+- Computer or mobile device for running the application
+
+
 
 ### Implementation
 For Software:
