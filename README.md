@@ -1,6 +1,6 @@
 <img width="1280" alt="readme-banner" src="https://github.com/user-attachments/assets/35332e92-44cb-425b-9dff-27bcf1023c6c">
 
-# [Novu] 🎯
+# [Pawsome Translator] 🎯
 
 
 ## Basic Details
@@ -8,9 +8,9 @@
 
 
 ### Team Members
-- Team Lead: Aflah Muhammed P - [CET]
-- Member 2: Alan Joe benny - CET
-- Member 3: Shravan Pandala - CET
+- Team Lead: Shravan Pandala - [CET]
+- Member 2: Alen Joe benny - CET
+- Member 3: Aflah Muhammed P- CET
 
 ### Project Description
 Bark Translator is a fun and innovative application that translates dog barks into human language. By analyzing the sound patterns and frequencies of different barks, the app provides users with insights into what their furry friends might be trying to communicate. Whether it's excitement, hunger, or a call for attention, Bark Translator helps bridge the communication gap between dogs and their owners.
