@@ -8,7 +8,7 @@
 
 
 ### Team Members
-- Team Lead: Shravan Pandala - [CET]
+- Team Lead: Shravan Nander Pandala - [CET]
 - Member 2: Alen Joe benny - CET
 - Member 3: Aflah Muhammed P- CET
 
