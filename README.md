@@ -61,14 +61,15 @@ npm start
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+![image](https://github.com/user-attachments/assets/8467bc0c-e07f-4f45-bfc9-4f325c0a7eb3)
+![image](https://github.com/user-attachments/assets/a348fc91-3a11-4765-9b56-f6517212add3)
+![image](https://github.com/user-attachments/assets/0fbcabdf-c9a1-4e2b-b29e-791777d5d980)
+![image](https://github.com/user-attachments/assets/8000b2e0-0ab6-4384-a88b-d91331a1863f)
+![image](https://github.com/user-attachments/assets/3c054bd0-5e04-4a55-a89a-e04593c1bd92)
+![image](https://github.com/user-attachments/assets/790c962b-ff12-49c9-8710-44fd98b29450)
+![image](https://github.com/user-attachments/assets/56acdae8-ac72-438f-92e5-6d0a65a9459e)
+![image](https://github.com/user-attachments/assets/299bb530-d935-4ddc-a596-5c45d7493551)
+![image](https://github.com/user-attachments/assets/5aaee246-ddc6-46e2-85dd-3666ed5dc7b7)
 
 # Diagrams
 bark-translator/
@@ -112,26 +113,30 @@ For Hardware:
 *Add caption explaining connections*
 
 ![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
+E:.
+├───client
+│   ├───public
+│   └───src
+│       ├───components
+│       ├───contexts
+│       └───styles
+├───js
+└───server
+    └───uploads
 
 # Build Photos
 ![Components](Add photo of your components here)
-*List out all components shown*
+![{0922AFC2-6FE0-4890-A3EF-C3779CFD2D2C}](https://github.com/user-attachments/assets/61c07d24-ce4b-411e-8e39-a8bf6174d4e8)
+
 
 ![Build](Add photos of build process here)
 *Explain the build steps*
 
 ![Final](Add photo of final product here)
-*Explain the final build*
-![image](https://github.com/user-attachments/assets/8467bc0c-e07f-4f45-bfc9-4f325c0a7eb3)
-![image](https://github.com/user-attachments/assets/a348fc91-3a11-4765-9b56-f6517212add3)
-![image](https://github.com/user-attachments/assets/0fbcabdf-c9a1-4e2b-b29e-791777d5d980)
-![image](https://github.com/user-attachments/assets/8000b2e0-0ab6-4384-a88b-d91331a1863f)
-![image](https://github.com/user-attachments/assets/3c054bd0-5e04-4a55-a89a-e04593c1bd92)
-![image](https://github.com/user-attachments/assets/790c962b-ff12-49c9-8710-44fd98b29450)
-![image](https://github.com/user-attachments/assets/56acdae8-ac72-438f-92e5-6d0a65a9459e)
-![image](https://github.com/user-attachments/assets/299bb530-d935-4ddc-a596-5c45d7493551)
-![image](https://github.com/user-attachments/assets/5aaee246-ddc6-46e2-85dd-3666ed5dc7b7)
+![image](https://github.com/user-attachments/assets/3971167f-d302-42a5-a78c-fbbdf9be312d)
+Successfully created a Docker image of the project and pushed to DockerHub
+
+
 
 ### Project Demo
 # Video
