@@ -63,8 +63,39 @@ For Software:
 *Add caption explaining what this shows*
 
 # Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
+bark-translator/
+├── client/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── AudioRecorder.jsx
+│   │   │   ├── AudioUploader.jsx
+│   │   │   ├── AudioVisualizer.jsx
+│   │   │   ├── History.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   └── Translate.jsx
+│   │   ├── styles/
+│   │   │   └── main.css
+│   │   ├── App.jsx
+│   │   └── index.js
+│   ├── package.json
+│   └── README.md
+├── server/
+│   ├── controllers/
+│   │   ├── historyController.js
+│   │   └── translateController.js
+│   ├── models/
+│   │   └── Translation.js
+│   ├── routes/
+│   │   ├── historyRoutes.js
+│   │   └── translateRoutes.js
+│   ├── middleware/
+│   │   └── errorMiddleware.js
+│   └── server.js
+├── package.json
+└── README.md
 
 For Hardware:
 
