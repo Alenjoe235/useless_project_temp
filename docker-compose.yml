@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server:/usr/src/app
+    environment:
+      - NODE_ENV=development
+
+  client:
+    build: ./client
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./client:/usr/src/app
+    environment:
+      - NODE_ENV=development
