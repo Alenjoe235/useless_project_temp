@@ -43,11 +43,19 @@ For Hardware:
 
 ### Implementation
 For Software:
+
 # Installation
-[commands]
+
 
 # Run
 [commands]
+//for server
+cd server
+npm start
+//for frontend
+cd client
+npm start
+
 
 ### Project Documentation
 For Software:
