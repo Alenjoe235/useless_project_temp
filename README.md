@@ -30,7 +30,7 @@ For Software:
 - Languages used: JavaScript, HTML, CSS
 - Frameworks used: React
 - Libraries used: Web Audio API, TensorFlow.js for sound classification
-- Tools used: Create React App, npm
+- Tools used: Create React, Node Js, MongoDB, Docker
 
 
 
