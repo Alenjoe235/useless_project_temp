@@ -2,19 +2,71 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
-// const tf = require('@tensorflow/tfjs-node'); // Remove TensorFlow import
+const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const wav = require('node-wav');
-
-// Comment out mongoose
-// const mongoose = require('mongoose');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// CORS Configuration
+// Constants
+const UPLOAD_DIR = 'uploads';
+const MODEL_PATH = 'models/bark_classifier/model.json';
+
+// Bark translation configurations
+const MOODS = {
+    HAPPY: {
+        translations: [
+            "I'm so excited to see you!",
+            "This is the best day ever!",
+            "Let's play together!",
+            "You make me so happy!"
+        ],
+        confidence: 0.9
+    },
+    HUNGRY: {
+        translations: [
+            "Is it dinner time yet?",
+            "Those treats smell amazing!",
+            "I'd love a snack right now!",
+            "Food please!"
+        ],
+        confidence: 0.85
+    },
+    ALERT: {
+        translations: [
+            "Someone's at the door!",
+            "Did you hear that?",
+            "There's something interesting out there!",
+            "Pay attention, something's happening!"
+        ],
+        confidence: 0.8
+    },
+    ANXIOUS: {
+        translations: [
+            "I'm feeling a bit nervous",
+            "Can you stay close to me?",
+            "Something's making me uneasy",
+            "I need some comfort"
+        ],
+        confidence: 0.75
+    },
+    PLAYFUL: {
+        translations: [
+            "Let's play fetch!",
+            "Chase me!",
+            "Where's my favorite toy?",
+            "Play time is the best time!"
+        ],
+        confidence: 0.95
+    }
+};
+
+// Middleware Configuration
 app.use(cors({
-    origin: 'http://localhost:5000', // Update to match Docker client URL
+    origin: process.env.NODE_ENV === 'production' 
+        ? process.env.CLIENT_URL 
+        : 'http://localhost:5000',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -24,62 +76,132 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static('public'));
 
-// Multer configuration for audio file uploads
+// Storage Configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, UPLOAD_DIR);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `bark-${uniqueSuffix}${path.extname(file.originalname)}`);
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = ['audio/wav', 'audio/x-wav', 'audio/mpeg'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only WAV and MP3 files are allowed.'));
+        }
+    },
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
+});
 
-// Comment out MongoDB connection and schemas
-// Instead, use in-memory storage for history
+// In-memory storage for translation history
 let translations = [];
 
-// Make sure any MongoDB connection code is commented out
-/*
-mongoose.connect('mongodb://localhost:27017/your_database', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-*/
-
-// Remove TensorFlow model loading
-/*
+// Model handling
 let model;
 async function loadModel() {
     try {
-        // Replace with path to your model
-        model = await tf.loadLayersModel('file://./models/bark_classifier/model.json');
-        console.log('AI Model loaded successfully');
+        model = await tf.loadLayersModel(`file://${MODEL_PATH}`);
+        console.log('Bark classification model loaded successfully');
     } catch (error) {
         console.error('Error loading model:', error);
+        throw new Error('Failed to load AI model');
     }
 }
-loadModel();
-*/
 
-// Audio preprocessing function
-function preprocessAudio(audioPath) {
-    // Read and decode WAV file
-    const buffer = fs.readFileSync(audioPath);
-    const result = wav.decode(buffer);
-    
-    // Convert audio to mel spectrogram
-    // This is a simplified version - you'll need to implement proper audio preprocessing
-    const audioData = tf.tensor(result.channelData[0]);
-    const spectrogram = tf.signal.stft(audioData, 1024, 256);
-    const magnitude = tf.abs(spectrogram);
-    
-    // Resize to match model input size
-    return magnitude.expandDims(0);
+// Audio Processing
+async function preprocessAudio(audioPath) {
+    try {
+        const buffer = fs.readFileSync(audioPath);
+        const { sampleRate, channelData } = wav.decode(buffer);
+        
+        // Convert to mono if stereo
+        const monoData = channelData.length > 1 
+            ? channelData[0].map((sample, i) => 
+                channelData.reduce((sum, channel) => sum + channel[i], 0) / channelData.length)
+            : channelData[0];
+            
+        // Create spectrogram
+        const frameSize = 2048;
+        const hopSize = 512;
+        const fft = tf.signal.stft(
+            tf.tensor1d(monoData),
+            frameSize,
+            hopSize,
+            undefined,
+            tf.hannWindow
+        );
+        
+        const magnitude = tf.abs(fft);
+        const melSpectrogram = tf.image.resizeBilinear(
+            magnitude.expandDims(2),
+            [128, 130]
+        );
+        
+        return melSpectrogram.expandDims(0);
+    } catch (error) {
+        console.error('Error preprocessing audio:', error);
+        throw new Error('Failed to process audio file');
+    }
 }
 
-// API Routes
+// Translation Logic
+async function translateBark(audioPath) {
+    try {
+        if (!model) {
+            throw new Error('AI model not loaded');
+        }
+
+        const preprocessedAudio = await preprocessAudio(audioPath);
+        const prediction = await model.predict(preprocessedAudio).array();
+        
+        // Get the mood with highest probability
+        const moodIndex = prediction[0].indexOf(Math.max(...prediction[0]));
+        const moodKeys = Object.keys(MOODS);
+        const selectedMood = MOODS[moodKeys[moodIndex]];
+        
+        // Random translation from mood's collection
+        const translation = selectedMood.translations[
+            Math.floor(Math.random() * selectedMood.translations.length)
+        ];
+
+        return {
+            text: translation,
+            confidence: selectedMood.confidence * (0.9 + Math.random() * 0.1),
+            sentiment: {
+                mood: moodKeys[moodIndex],
+                intensity: prediction[0][moodIndex]
+            }
+        };
+    } catch (error) {
+        console.error('Translation error:', error);
+        return fallbackTranslation();
+    }
+}
+
+function fallbackTranslation() {
+    const moodKeys = Object.keys(MOODS);
+    const randomMood = MOODS[moodKeys[Math.floor(Math.random() * moodKeys.length)]];
+    
+    return {
+        text: randomMood.translations[Math.floor(Math.random() * randomMood.translations.length)],
+        confidence: 0.6 + Math.random() * 0.2,
+        sentiment: {
+            mood: 'UNKNOWN',
+            intensity: 0.5
+        }
+    };
+}
+
+// Routes
 app.post('/api/translate', upload.single('audio'), async (req, res) => {
     try {
         if (!req.file) {
@@ -87,123 +209,79 @@ app.post('/api/translate', upload.single('audio'), async (req, res) => {
         }
 
         const translation = await translateBark(req.file.path);
-        const patterns = analyzePatterns(req.file.path);
-
-        // Store in memory instead of database
-        const newTranslation = {
+        
+        // Store translation in history
+        translations.push({
+            id: Date.now().toString(),
             audioFile: req.file.filename,
             translation: translation.text,
             confidence: translation.confidence,
             sentiment: translation.sentiment,
-            patterns,
             timestamp: new Date()
-        };
-        
-        translations.push(newTranslation);
+        });
+
+        // Limit history size
+        if (translations.length > 100) {
+            const oldestFile = translations[0].audioFile;
+            translations = translations.slice(-100);
+            
+            // Cleanup old files
+            fs.unlink(path.join(UPLOAD_DIR, oldestFile), (err) => {
+                if (err) console.error('Error deleting old file:', err);
+            });
+        }
 
         res.json({
             success: true,
-            translation: translation.text,
-            confidence: translation.confidence,
-            sentiment: translation.sentiment,
-            patterns
+            ...translation
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-app.get('/api/history', async (req, res) => {
-    try {
-        // Return in-memory translations instead of database query
-        const history = translations
-            .sort((a, b) => b.timestamp - a.timestamp)
-            .slice(0, 10);
-        res.json(history);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+app.get('/api/history', (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    const history = translations
+        .slice(-limit)
+        .reverse();
+    res.json(history);
 });
 
-// Updated translation function using AI
-async function translateBark(audioPath) {
+// Startup
+async function startServer() {
     try {
-        const preprocessedAudio = await preprocessAudio(audioPath);
-        const prediction = await model.predict(preprocessedAudio);
-        const moodIndex = prediction.argMax(-1).dataSync()[0];
+        // Ensure upload directory exists
+        if (!fs.existsSync(UPLOAD_DIR)) {
+            fs.mkdirSync(UPLOAD_DIR);
+        }
         
-        // Mapping of emotional states
-        const moods = {
-            0: { mood: "Happy", translations: ["I'm so excited!", "This is fun!", "I love this!"] },
-            1: { mood: "Anxious", translations: ["I'm feeling nervous", "Something's bothering me", "I need reassurance"] },
-            2: { mood: "Alert", translations: ["There's something there!", "Watch out!", "I heard something"] },
-            3: { mood: "Hungry", translations: ["Time for food!", "I'm starving!", "Can I have a treat?"] },
-            4: { mood: "Playful", translations: ["Let's play!", "Come chase me!", "Want to play with my toy?"] }
-        };
-
-        const moodData = moods[moodIndex];
-        const confidence = prediction.max().dataSync()[0];
+        // Load AI model
+        await loadModel();
         
-        return {
-            text: moodData.translations[Math.floor(Math.random() * moodData.translations.length)],
-            confidence: confidence,
-            sentiment: {
-                mood: moodData.mood,
-                intensity: confidence
-            }
-        };
+        // Start server
+        app.listen(port, () => {
+            console.log(`🐕 Bark Translator Server running on port ${port}`);
+            console.log(`🎯 Ready to translate your furry friend's messages!`);
+        });
     } catch (error) {
-        console.error('Error in AI translation:', error);
-        // Fallback to basic translation if AI fails
-        return basicTranslation();
+        console.error('Failed to start server:', error);
+        process.exit(1);
     }
 }
 
-// Fallback translation function
-async function basicTranslation() {
-    const defaultTranslations = [
-        "Hello! I'm excited to see you!",
-        "I need attention!",
-        "I'm hungry!",
-        "Let's play!",
-        "I hear something!",
-        "I love you!",
-        "Can we go for a walk?"
-    ];
+startServer();
 
-    const sentiments = {
-        happy: { mood: "Happy", intensity: 0.9 },
-        excited: { mood: "Excited", intensity: 0.8 },
-        alert: { mood: "Alert", intensity: 0.7 },
-        hungry: { mood: "Hungry", intensity: 0.6 },
-        playful: { mood: "Playful", intensity: 0.9 }
-    };
-
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Randomly select translation and sentiment
-    const text = defaultTranslations[Math.floor(Math.random() * defaultTranslations.length)];
-    const sentimentKeys = Object.keys(sentiments);
-    const sentiment = sentiments[sentimentKeys[Math.floor(Math.random() * sentimentKeys.length)]];
-
-    return {
-        text,
-        confidence: 0.8 + Math.random() * 0.2,
-        sentiment
-    };
-}
-
-// Function to analyze bark patterns (mock)
-function analyzePatterns(audioPath) {
-    return ["Short bark", "Medium pitch", "Repeated pattern"];
-}
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+// Cleanup on shutdown
+process.on('SIGINT', () => {
+    console.log('\nCleaning up...');
+    fs.readdir(UPLOAD_DIR, (err, files) => {
+        if (err) throw err;
+        for (const file of files) {
+            fs.unlink(path.join(UPLOAD_DIR, file), err => {
+                if (err) console.error(`Error deleting ${file}:`, err);
+            });
+        }
+    });
+    process.exit();
 });
-
-// Make sure uploads directory exists
-if (!fs.existsSync('./uploads')){
-    fs.mkdirSync('./uploads');
-}

@@ -1,15 +1,13 @@
 // components/Translate.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AudioRecorder from './AudioRecorder';
 import AudioUploader from './AudioUploader';
-import AudioVisualizer from './AudioVisualizer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Translate() {
   const [activeTab, setActiveTab] = useState('record');
   const [translation, setTranslation] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [audioData, setAudioData] = useState(null);
   const [recentTranslations, setRecentTranslations] = useState([]);
 
   // Sample bark patterns and translations
@@ -98,7 +96,6 @@ function Translate() {
     try {
       const result = await processAudio(audio, type);
       setTranslation(result);
-      setAudioData(audio);
     } catch (error) {
       console.error('Translation error:', error);
     } finally {
