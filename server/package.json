@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "force-push": "git add . && git commit -m 'force push' && git push origin main --force"
   },
   "author": "",
   "license": "ISC",
