@@ -1,11 +1,11 @@
+[Visit the hosted application](https://bark-translator-unknown-geek-unknown-geeks-projects.vercel.app/)
+
 <img width="1280" alt="readme-banner" src="https://github.com/user-attachments/assets/35332e92-44cb-425b-9dff-27bcf1023c6c">
 
 # [Pawsome Translator] 🎯
 
-
 ## Basic Details
 ### Team Name: [Novus Codex]
-
 
 ### Team Members
 - Team Lead: Shravan Pandala - [CET]
@@ -15,14 +15,11 @@
 ### Project Description
 Bark Translator is a fun and innovative application that translates dog barks into human language. By analyzing the sound patterns and frequencies of different barks, the app provides users with insights into what their furry friends might be trying to communicate. Whether it's excitement, hunger, or a call for attention, Bark Translator helps bridge the communication gap between dogs and their owners.
 
-
 ### The Problem (that doesn't exist)
 In a world where dogs bark but humans can only guess their meaning, how can we truly understand our canine companions? The struggle of deciphering barks has plagued pet owners for ages—until now!
 
-
 ### The Solution (that nobody asked for)
 Bark Translator offers a lighthearted solution by using advanced sound analysis to interpret barks. The app not only translates barks into humorous phrases but also provides tips on how to respond, making it a delightful experience for pet owners and their dogs alike.
-
 
 ## Technical Details
 ### Technologies/Components Used
@@ -32,14 +29,9 @@ For Software:
 - Libraries used: Web Audio API, TensorFlow.js for sound classification
 - Tools used: Create React App, npm
 
-
-
-
 For Hardware:
 - Microphone for sound input
 - Computer or mobile device for running the application
-
-
 
 ### Implementation
 For Software:
@@ -87,16 +79,16 @@ For Hardware:
 
 ### Project Demo
 # Video
-[Add your demo video link here]
+[Watch the demo video](https://www.loom.com/share/07030a81039241d3ad1ea895ba1bbcf8?sid=ef7b0ccd-cb3c-4370-8efe-aac7b1918866)
 *Explain what the video demonstrates*
 
 # Additional Demos
 [Add any extra demo materials/links]
 
 ## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
+- Shravan Pandala
+- Alen Joe benny:
+- Aflah Muhammed P: 
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
