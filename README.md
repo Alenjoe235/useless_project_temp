@@ -36,10 +36,10 @@ For Hardware:
 ### Implementation
 For Software:
 # Installation
-[commands]
+1. clone the repository
 
 # Run
-[commands]
+npm start
 
 ### Project Documentation
 For Software:
